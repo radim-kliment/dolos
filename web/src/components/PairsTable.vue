@@ -53,14 +53,18 @@ export default class PairsTable extends Vue {
   };
 
   get items(): Array<{left: string; right: string; similarity: string}> {
-    return Object.values(this.pairs).map(pair => ({
-      pair: pair,
-      left: pair.leftFile.path,
-      right: pair.rightFile.path,
-      similarity: pair.similarity.toFixed(2),
-      longestFragment: pair.longestFragment,
-      totalOverlap: pair.totalOverlap,
-    }));
+    return Object.values(this.pairs)
+      .filter(p => p.leftFile.extra.full_name === p.rightFile.extra.full_name)
+      .filter(p => p.leftFile.content.length > 100)
+      .filter(p => p.rightFile.content.length > 100)
+      .map(pair => ({
+        pair: pair,
+        left: pair.leftFile.path,
+        right: pair.rightFile.path,
+        similarity: pair.similarity.toFixed(2),
+        longestFragment: pair.longestFragment,
+        totalOverlap: pair.totalOverlap,
+      }));
   }
 
   public rowClicked(item: {pair: Pair}): void {
